@@ -4,6 +4,7 @@
 local OS = "AC5D93D559A44DFD9A4414809FFF4085"
 local netBootPort = 1
 local netBootPrograms = {}
+local netLibPrograms = {}
 local hasNas = false
 local hasCode = false
 
@@ -49,6 +50,7 @@ file:close()
 
 fs.createDir("/nas")
 fs.createDir("/code")
+fs.createDir("/libs")
 fs.createDir("/mnt")
 
 -- Mounting HDDs
@@ -139,6 +141,21 @@ for codename in codelist:gmatch("[^\n]+") do
     end
 end
 
+local req = internet:request("https://raw.githubusercontent.com/codebfu/ficsit-codes/master/lib.lst", "GET", "")
+local _, codelist = req:await()
+
+for codename in codelist:gmatch("[^\n]+") do
+	if codename ~= "" then
+        print("Retrieving library : " .. codename)
+        local req = internet:request("https://raw.githubusercontent.com/codebfu/ficsit-codes/master/libs/" .. codename .. ".lua", "GET", "")
+        local _, code = req:await()
+        local file = fs.open("/libs/" .. codename, "w")
+        file:write(code)
+        file:close()
+        netLibPrograms[codename] = "remote"
+    end
+end
+
 -- Setup Network
 local net = computer.getPCIDevices(classes.NetworkCard)[1]
 if not net then
@@ -161,9 +178,23 @@ while true do
             print("Program Request for \"" .. arg1 .. "\" from \"" .. s .. "\"")
             local code = netBootPrograms[arg1] or netBootFallbackProgram
             if code == "remote" then
-            	code = filesystem.doFile("/code/" .. arg1)
+            	print("This is remote code")
+            	local file = fs.open("/code/" .. arg1, "r") 
+            	code = file:read(65535)
+            	file:close()
             end
             net:send(s, netBootPort, "setEEPROM", arg1, code)
+        end
+        if cmd == "getLibrary" then
+            print("Program Request for \"" .. arg1 .. "\" from \"" .. s .. "\"")
+            local code = netLibPrograms[arg1]
+            if code == "remote" then
+            	print("This is remote library")
+            	local file = fs.open("/libs/" .. arg1, "r") 
+            	code = file:read(65535)
+            	file:close()
+            end
+            net:send(s, netBootPort, "setLibrary", arg1, code)
         end
     end
 end
