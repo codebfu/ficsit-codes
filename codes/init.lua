@@ -18,7 +18,7 @@ while realProgram == nil do
         local e, _, s, p, cmd, programName, code = event.pull(30)
         if e == "NetworkMessage" and p == netBootPort and cmd == "setEEPROM" and programName == realProgramName then
             print("Net-Boot: Got Code for Program \"" .. realProgramName .. "\" from Server \"" .. s .. "\"")
-            realProgram = load(code)
+            realProgram = code
         elseif e == nil then
             computer.log(3, "Net-Boot: Request Timeout reached! Retry...")
             break
