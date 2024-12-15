@@ -1,3 +1,5 @@
+init
+boot-client
 remote-test
 dban
 depot-mgmt
