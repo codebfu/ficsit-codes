@@ -186,7 +186,7 @@ while true do
             net:send(s, netBootPort, "setEEPROM", arg1, code)
         end
         if cmd == "getLibrary" then
-            print("Program Request for \"" .. arg1 .. "\" from \"" .. s .. "\"")
+            print("Library Request for \"" .. arg1 .. "\" from \"" .. s .. "\"")
             local code = netLibPrograms[arg1]
             if code == "remote" then
             	print("This is remote library")

@@ -36,9 +36,9 @@ function getLibrary(name)
 	while library == nil do
     	print("Net-Boot: Request Net-Boot-Library \"" .. name .. "\" from Port " .. netBootPort)
     	net:broadcast(netBootPort, "getLibrary", name)
-    	while program == nil do
+    	while library == nil do
         	local e, _, s, p, cmd, libraryName, code = event.pull(30)
-        	if e == "NetworkMessage" and p == netBootPort and cmd == "setLibrary" and programName == name then
+        	if e == "NetworkMessage" and p == netBootPort and cmd == "setLibrary" and libraryName == name then
             	print("Net-Boot: Got Code for Library \"" .. name .. "\" from Server \"" .. s .. "\"")
             	library = load(code)
         	elseif e == nil then
@@ -47,6 +47,7 @@ function getLibrary(name)
         	end
     	end
 	end
+    local success, error = pcall(library)
 end
 
 -- Request Code from Net-Boot Server
@@ -67,6 +68,7 @@ while program == nil do
 end
 
 -- Execute Code got from Net-Boot Server
+print("Now starting program: " .. netBootProgramName)
 netBootReset = nil
 local success, error = pcall(program)
 if not success then

@@ -1,3 +1,9 @@
+getLibrary("debug-print")
+
+function netBootReset()
+    print("Net-Boot Restart Cleanup!")
+end
+
 while true do
 	event.pull(30)
 	local stations = component.proxy(component.findComponent(""))
