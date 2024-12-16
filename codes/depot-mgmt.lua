@@ -5,7 +5,7 @@ function netBootReset()
 end
 
 while true do
-	event.pull(30)
+	event.pull(10)
 	local stations = component.proxy(component.findComponent(""))
 	for _, station in ipairs(stations) do
 		if station.internalName:find("TrainStation") then
