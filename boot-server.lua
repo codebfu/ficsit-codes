@@ -196,5 +196,9 @@ while true do
             end
             net:send(s, netBootPort, "setLibrary", arg1, code)
         end
+        if cmd == "ping" then
+            computer.log(2, "Net-Boot: Received ping Server \"" .. s .. "\"")
+            net:send(s, netBootPort, "pong", computer.getInstance().id, computer.getInstance().nick)
+        end
     end
 end

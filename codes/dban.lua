@@ -22,3 +22,4 @@ for _, drive in ipairs(fs.children("/dev")) do
         end
     end
 end
+print("done")

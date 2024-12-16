@@ -26,6 +26,10 @@ function event.pull(timeout)
             end
             computer.reset()
         end
+        if cmd == "ping" then
+            computer.log(2, "Net-Boot: Received ping Server \"" .. s .. "\"")
+            net:send(s, netBootPort, "pong", computer.getInstance().id, computer.getInstance().nick)
+        end
     end
     return table.unpack(args)
 end
