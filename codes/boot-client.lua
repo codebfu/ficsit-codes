@@ -1,7 +1,7 @@
 --[[ Net-Boot Client ]]--
 
 -- Configuration
-local debug = true
+debug = false
 local netBootProgramName = "remote-test"
 local netBootPort = 1
 
