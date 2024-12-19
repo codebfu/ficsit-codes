@@ -5,6 +5,7 @@ function netBootReset()
 end
 
 while true do
+	print("Waiting 10s before next loop")
 	event.pull(10)
 	local stations = component.proxy(component.findComponent(""))
 	for _, station in ipairs(stations) do
@@ -47,6 +48,8 @@ while true do
 		end
 	end
 	if debug then
+		print("debug is true, not looping")
 		break
 	end
 end
+print("done")
