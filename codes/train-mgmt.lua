@@ -2,6 +2,7 @@ getLibrary("debug-print")
 getLibrary("deepcopy")
 getLibrary("tablelength")
 getLibrary("getPercentage")
+getLibrary("stationState")
 
 function netBootReset()
     print("Net-Boot Restart Cleanup!")
@@ -9,27 +10,9 @@ end
 
 local components = component.findComponent("")
 
-requesterState = { unknown = "?", full = "*", inNeed = "!", filling = "+"}
-
 itemTable = { encased_beam = "Industrial Encased Beam"}
 
 resetState = false
-
-function setState(station, state)
-    local name = station.name:sub(2)
-    station.name = requesterState[state] .. name
-end
-
-function getState(station)
-    local state = station.name:sub(1,1)
-    for s, v in pairs(requesterState) do
-        if state == v then
-            return s
-        end
-    end
-    station.name = requesterState["unknown"] .. station.name
-    return "unknown"
-end
 
 function updateItem(station, stype, item)
     local sitem = "not found"

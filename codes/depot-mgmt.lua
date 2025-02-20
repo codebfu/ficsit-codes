@@ -1,4 +1,6 @@
 getLibrary("debug-print")
+getLibrary("getPercentage")
+getLibrary("stationState")
 
 function netBootReset()
     print("Net-Boot Restart Cleanup!")
@@ -11,12 +13,15 @@ while true do
 	for _, station in ipairs(stations) do
 		if station.internalName:find("TrainStation") then
  			dprint("Processing : " .. station.name .. " (" .. station.id .. ")")
- 			local count = 0
- 			local item = ""
+			local count = 0
+			local max = 0
+			local slots = 0
+			local item = ""
  			local assigned = false
+			local state = getState(station)
  			if station.name:find(":") then
  				assigned = true
- 				item = station.name:sub(0,station.name:find(":")-2)
+ 				item = station.name:sub(2,station.name:find(":")-2)
  				dprint("--- This depot is assigned to : " .. item)
  			else
  				dprint("--- This depot was previously unassigned")
@@ -33,11 +38,21 @@ while true do
  							if stack.count > 0 then
 		 						count = count + stack.count
 		 						item = stack.item.type.name
+								max = stack.item.type.max
  							end
  						end 
  					end
  				end
  			end
+			max = max * slots
+			local filled = getPercentage(count, max)
+			if filled < 80 then
+				if state ~= "filling" then
+					setState(station, "inNeed")
+				end
+			else
+				setState(station, "full")
+			end
  			if count == 0 and assigned == false then
 				dprint("--- This depot is still unassigned")
 				station.name = "Unassigned Depot"
