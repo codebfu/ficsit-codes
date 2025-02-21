@@ -46,6 +46,14 @@ while true do
  			end
 			max = max * slots
 			local filled = getPercentage(count, max)
+			if count == 0 and assigned == false then
+				dprint("--- This depot is still unassigned")
+				station.name = "?Unassigned Depot"
+			else
+				dprint("--- This depot is assigned to " .. item .. " (" .. count .. ")")
+				station.name = "?" .. item .. " : " .. count
+				setState(station, state)
+			end 			
 			if filled < 80 then
 				if state ~= "filling" then
 					dprint("--- This depot is in need")
@@ -55,13 +63,6 @@ while true do
 				dprint("--- This depot is full")
 				setState(station, "full")
 			end
- 			if count == 0 and assigned == false then
-				dprint("--- This depot is still unassigned")
-				station.name = "Unassigned Depot"
-			else
-				dprint("--- This depot is assigned to " .. item .. " (" .. count .. ")")
-				station.name = item .. " : " .. count
-			end 			
 		end
 	end
 	if debug then
