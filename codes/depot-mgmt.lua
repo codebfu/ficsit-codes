@@ -12,13 +12,13 @@ while true do
 	local stations = component.proxy(component.findComponent(""))
 	for _, station in ipairs(stations) do
 		if station.internalName:find("TrainStation") then
- 			dprint("Processing : " .. station.name .. " (" .. station.id .. ")")
+			local state = getState(station)
+ 			dprint("Processing : " .. station.name .. " (" .. station.id .. ") state: " .. state)
 			local count = 0
 			local max = 0
 			local slots = 0
 			local item = ""
  			local assigned = false
-			local state = getState(station)
  			if station.name:find(":") then
  				assigned = true
  				item = station.name:sub(2,station.name:find(":")-2)
@@ -48,9 +48,11 @@ while true do
 			local filled = getPercentage(count, max)
 			if filled < 80 then
 				if state ~= "filling" then
+					dprint("--- This depot is in need")
 					setState(station, "inNeed")
 				end
 			else
+				dprint("--- This depot is full")
 				setState(station, "full")
 			end
  			if count == 0 and assigned == false then
