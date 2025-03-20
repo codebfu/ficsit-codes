@@ -258,7 +258,7 @@ while true do
             end
             max = max * slots
             local filled = getPercentage(count, max)
-            if filled < 50 then
+            if filled < 50 or max == 0 then
                 if getState(station.object) ~= "filling" then
                     setState(station.object, "inNeed")
                 end
