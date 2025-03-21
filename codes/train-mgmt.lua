@@ -84,7 +84,7 @@ for _,station in ipairs(stations) do
 	if station.name:find(":") then
 		-- This station needs stuff, maybe
 		stype = "depot"
-		item = station.name:sub(1,station.name:find(":")-2)
+		item = station.name:sub(1,station.name:find(":")-2):sub(2)
         sload = false
 	end
 	if station.name:find("Garage_") then
@@ -271,7 +271,7 @@ while true do
     print("Fulfilling new requests")
     resourceRequesters = {}
     for _,station in ipairs(stationDetails) do
-        if station.type == "requester" and getState(station.object) == "inNeed" then
+        if (station.type == "requester" or station.type == "depot") and getState(station.object) == "inNeed" then
             if resourceProviders[station.item] ~= nil then
                 for _, provider in ipairs(resourceProviders[station.item]) do
                     if provider.reserved == false then
