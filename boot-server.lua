@@ -40,10 +40,17 @@ function mountOS(uuid, label)
 	local fs = filesystem
 
 	if fs.initFileSystem("/dev") == false then
-    	computer.panic("Cannot initialize /dev")
+     	computer.panic("Cannot initialize /dev")
 	end
 
 	print("Mounting OS")
+	
+	-- Wait for filesystem to be ready
+	local fsWrapper = getLibrary("fs-wrapper")
+	if fsWrapper then
+		fsWrapper.waitForReady(60)
+	end
+	
 	if fs.mount("/dev" .. uuid, "/") == false then
 		error("Couldn't mount root fs")
 	end
@@ -61,7 +68,14 @@ function formatAndMount(type, label, mountpoint)
 	local fs = filesystem
 	local identified = ""
 	local duplicate = false
-	print("Searching for drive '" .. type .. " : " .. label .. "'")
+	
+	-- Wait for filesystem to be ready
+	local fsWrapper = getLibrary("fs-wrapper")
+	if fsWrapper then
+		fsWrapper.waitForReady(60)
+	end
+	
+	print("Searching for drive '"" .. type .. " : " .. label .. "'")
 	for _, drive in ipairs(fs.children("/dev")) do
     	print("--- Checking drive : " .. drive)
    		local dtype = ""
@@ -128,6 +142,19 @@ end
 mountOS(OS, "net-boot OS")
 formatAndMount("codes", "net-boot codes", "/codes")
 formatAndMount("libs", "net-boot libs", "/libs")
+
+-- Load fs-wrapper library if available
+local fsWrapper = nil
+local success, err = pcall(function()
+    fsWrapper = getLibrary("fs-wrapper")
+    if fsWrapper then
+        fsWrapper.init()
+    end
+end)
+
+if not success then
+    print("Warning: fs-wrapper library not available, continuing without it")
+end
 
 -- Retrieve Remote Code
 local internet = computer.getPCIDevices(classes.FINInternetCard)[1]
