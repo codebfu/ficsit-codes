@@ -75,7 +75,7 @@ function formatAndMount(type, label, mountpoint)
 		fsWrapper.waitForReady(60)
 	end
 	
-	print("Searching for drive '"" .. type .. " : " .. label .. "'")
+	print("Searching for drive '" .. type .. " : " .. label .. "'")
 	for _, drive in ipairs(fs.children("/dev")) do
     	print("--- Checking drive : " .. drive)
    		local dtype = ""
